@@ -13,10 +13,10 @@ variable "rg_name" {
   type = string
 }
 
-variable "tenant_id" {
-  description = "ID of the tenant"
-  type = string
-}
+# variable "tenant_id" {
+#   description = "ID of the tenant"
+#   type = string
+# }
 
 # variable "rg_id" {
 #   description = "Id of resource group"
