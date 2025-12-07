@@ -1,0 +1,96 @@
+name: Provision infrastructure to Azure
+
+on:
+    pull_request: 
+        branches: 
+            - dev
+            - main
+
+jobs:
+    setup:
+        name: Deploy infrastructure
+        runs-on: ubuntu-latest
+        # environment: ${{ github.ref_name }}
+        defaults:
+            run:
+                working-directory: ./multi-cloud/azure
+        steps:
+            - name: "Checkout Repo"
+              uses: actions/checkout@v6.0.1
+              with:
+                fetch-tags: true
+                lfs: true
+
+            - name: "Azure Login"
+              uses: Azure/login@v2.3.0
+              with:
+                subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
+                client-id: ${{ secrets.CLIENT_ID }}
+                tenant-id: ${{ secrets.TENANT_ID }}
+
+            - name: "Setup Terraform"
+              uses: hashicorp/setup-terraform@v2.0.3
+
+            - name: 'Install TFLint'
+              run: |
+                curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+                tflint --version
+
+            - name: 'Install tfsec'
+              run: |
+                curl -sLo /tmp/tfsec https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
+                chmod +x /tmp/tfsec
+                mv /tmp/tfsec /usr/local/bin/
+                tfsec --version
+
+            - name: 'Terraform Init'
+              run: terraform init
+
+            - name: 'Terraform Format'
+              run: terraform fmt
+
+            - name: 'Terraform Validate'
+              run: terraform validate
+
+            - name: 'TFLint'
+              run: |
+                tflint --init
+                tflint
+
+            - name: 'tfsec'
+              run: tfsec .
+
+            - name: 'Terraform Plan'
+              run: terraform plan -var-file=${{ github.ref_name }}.tfvars -out=tfplan
+
+            - name: Upload Plan
+              uses: actions/upload-artifact@v5.0.0
+              with:
+                name: tfplan
+                path: ./tfplan
+
+    # apply:
+    #     needs: setup
+    #     runs-on: ubuntu-latest
+    #     environment: ${{ github.ref_name }}
+    #     defaults:
+    #         run:
+    #             working-directory: ./multi-cloud/azure
+    #     steps:
+    #         - name: "Checkout Repo"
+    #           uses: actions/checkout@v6.0.1
+    #           with:
+    #             fetch-tags: true
+    #             lfs: true
+
+    #         - name: Download Plan Artifact
+    #           uses: actions/download-artifact@v5
+    #           with:
+    #             name: tfplan
+    #             path: ./
+
+    #         - name: "Terraform Init"
+    #           run: terraform init
+
+    #         - name: "Terraform Apply"
+    #           run: terraform apply --auto-approve -var-file=${{ github.ref_name }}.tfvars tfplan

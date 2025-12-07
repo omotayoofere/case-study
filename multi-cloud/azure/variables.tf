@@ -3,7 +3,7 @@ variable "cluster_name" {
   type = string
 }
 
-variable "azure_sub_id" {
+variable "SUBSCRIPTION_ID" {
   description = "ID of azure subscription"
   type = string
 }

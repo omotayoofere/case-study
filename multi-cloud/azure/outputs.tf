@@ -10,26 +10,30 @@ output "rg_region" {
   value = module.azure-rg.rg_region
 }
 
-# output "vnet_id" {
-#   value = module.cluster-vnet.vnet_id
-# }
+output "nsg_id" {
+  value = module.emart-sec-group.nsg_id
+}
 
-# output "public_subnet_id" {
-#   value = module.public_subnet.subnet_id
-# }
+output "vnet_id" {
+  value = module.cluster-vnet.vnet_id
+}
 
-# output "private_subnet_id" {
-#   value = module.private_subnet.subnet_id
-# }
+output "public_subnet_id" {
+  value = module.public_subnet.subnet_id
+}
 
-# output "worker_node_nat_ip_id" {
-#   value = module.natgw_public_ip.worker_node_nat_ip_id
-# }
+output "private_subnet_id" {
+  value = module.private_subnet.subnet_id
+}
 
-# output "worker_node_nat_ip" {
-#   value = module.natgw_public_ip.worker_node_nat_ip
-# }
+output "worker_node_nat_ip_id" {
+  value = module.natgw_public_ip.worker_node_nat_ip_id
+}
 
-# output "worker_node_nat" {
-#   value = module.cluster-vnet.worker_node_nat
-# }
+output "worker_node_nat_ip" {
+  value = module.natgw_public_ip.worker_node_nat_ip
+}
+
+output "worker_node_nat" {
+  value = module.cluster-vnet.worker_node_nat
+}
