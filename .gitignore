@@ -39,5 +39,4 @@ terraform.rc
 .terraform.lock.hcl
 
 # Environment files
-env-var/
 *.env
