@@ -61,7 +61,7 @@ jobs:
               run: tfsec .
 
             - name: 'Terraform Plan'
-              run: terraform plan -var-file=${{ github.ref_name }}.tfvars -out=tfplan
+              run: terraform plan -var-file=env-var/${{ github.ref_name }}.tfvars -out=tfplan
 
             - name: Upload Plan
               uses: actions/upload-artifact@v5.0.0
