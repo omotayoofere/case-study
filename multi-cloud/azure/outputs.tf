@@ -34,6 +34,6 @@ output "worker_node_nat_ip" {
   value = module.natgw_public_ip.worker_node_nat_ip
 }
 
-output "worker_node_nat" {
-  value = module.cluster-vnet.worker_node_nat
-}
+# output "worker_node_nat" {
+#   value = module.cluster-vnet.worker_node_nat
+# }
