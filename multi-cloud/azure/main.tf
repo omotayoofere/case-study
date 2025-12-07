@@ -1,6 +1,6 @@
 provider "azurerm" {
   features {}
-  subscription_id = var.azure_sub_id
+  subscription_id = var.SUBSCRIPTION_ID
 }
 
 module "azure-rg" {
