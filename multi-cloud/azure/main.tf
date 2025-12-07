@@ -53,7 +53,7 @@ module "emart-sec-group" {
     local.common_tags
   )
 }
-
+##this 
 module "emart_public_ip" {
   source = "./modules/publicIp"
   ip_name = var.emart_vm_public_ip
