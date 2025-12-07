@@ -38,3 +38,18 @@ variable "tags" {
   description = "Common tags for all module resources"
   type        = map(string)
 }
+
+variable "admin_username" {
+  description = "Admin user name"
+  type = string
+}
+
+variable "admin_password" {
+  description = "Password of admin"
+  type = string
+}
+
+variable "ssh_key" {
+  description = "SSH Key"
+  type = string
+}

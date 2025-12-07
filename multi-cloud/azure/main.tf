@@ -104,6 +104,9 @@ module "emart-vm" {
   vm_nic = var.vm_nic
   public_ip = module.vm_public_ip.worker_node_nat_ip_id
   subnet_id = module.public_subnet.subnet_id
+  ssh_key = var.ssh_key
+  admin_password = var.admin_password
+  admin_username = var.admin_username
   tags = merge(
     local.common_tags
   )
@@ -116,6 +119,9 @@ module "emart-vm2" {
   cluster_name = var.cluster_name
   vm_name = var.vm2_name
   vm_nic = var.vm2_nic
+  ssh_key = var.ssh_key
+  admin_password = var.admin_password
+  admin_username = var.admin_username
   subnet_id = module.private_subnet.subnet_id
   tags = merge(
     local.common_tags

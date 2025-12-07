@@ -113,4 +113,19 @@ variable "common_tags" {
   }
 }
 
+variable "admin_password" {
+  description = "Name of Admin"
+  type = string
+}
+
+variable "admin_username" {
+  description = "Password of Admin"
+  type = string
+}
+
+variable "ssh_key" {
+  description = "SSH public"
+  type = string
+}
+
 
