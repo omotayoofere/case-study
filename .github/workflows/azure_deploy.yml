@@ -88,14 +88,18 @@ jobs:
               run: tfsec .
 
             - name: Terraform Plan
+              timeout-minutes: 5
+              env:
+                TF_LOG: DEBUG
               run: |
                 terraform plan \
                             -var-file=env-var/main.tfvars \
                             -var "ssh_key=$SSH_KEY" \
                             -var "admin_pass=$ADMIN_PASS" \
-                            -out=tfplan
+                            -out=tfplan > tf-debug.log 2>&1 || (cat tf-debug.log && exit 1)
 
             - name: Upload Plan
+              if: failure()
               uses: actions/upload-artifact@v5.0.0
               with:
                 name: tfplan
