@@ -36,27 +36,27 @@ jobs:
             - name: "Setup Terraform"
               uses: hashicorp/setup-terraform@v2.0.3
 
-            - name: "Get Secrets from Key Vault"
-              id: get_secrets
-              run: |
-                # SSH key
-                SSH_KEY=$(az keyvault secret show \
-                            --vault-name ${{ secrets.KEYVAULT_NAME }} \
-                            --name sshkey \
-                            --query value -o tsv)
+            # - name: "Get Secrets from Key Vault"
+            #   id: get_secrets
+            #   run: |
+            #     # SSH key
+            #     SSH_KEY=$(az keyvault secret show \
+            #                 --vault-name ${{ secrets.KEYVAULT_NAME }} \
+            #                 --name sshkey \
+            #                 --query value -o tsv)
 
-                ADMIN_PASS=$(az keyvault secret show \
-                            --vault-name ${{ secrets.KEYVAULT_NAME }} \
-                            --name adminpassword \
-                            --query value -o tsv)
+            #     ADMIN_PASS=$(az keyvault secret show \
+            #                 --vault-name ${{ secrets.KEYVAULT_NAME }} \
+            #                 --name adminpassword \
+            #                 --query value -o tsv)
 
-                echo "SSH_KEY<<EOF" >> $GITHUB_ENV
-                        echo "$SSH_KEY" >> $GITHUB_ENV
-                        echo "EOF" >> $GITHUB_ENV
+            #     echo "SSH_KEY<<EOF" >> $GITHUB_ENV
+            #             echo "$SSH_KEY" >> $GITHUB_ENV
+            #             echo "EOF" >> $GITHUB_ENV
 
-                echo "ADMIN_PASS<<EOF" >> $GITHUB_ENV
-                        echo "$ADMIN_PASS" >> $GITHUB_ENV
-                        echo "EOF" >> $GITHUB_ENV
+            #     echo "ADMIN_PASS<<EOF" >> $GITHUB_ENV
+            #             echo "$ADMIN_PASS" >> $GITHUB_ENV
+            #             echo "EOF" >> $GITHUB_ENV
 
             - name: 'Install TFLint'
               run: |
@@ -90,13 +90,12 @@ jobs:
             - name: Terraform Plan
               timeout-minutes: 5
               env:
-                TF_LOG: DEBUG
+                TF_LOG: INFO
               run: |
                 terraform plan \
                             -var-file=env-var/main.tfvars \
-                            -var "ssh_key=$SSH_KEY" \
-                            -var "admin_pass=$ADMIN_PASS" \
-                            -out=tfplan > tf-debug.log 2>&1 || (cat tf-debug.log && exit 1)
+                            -var "ssh_key=${{ secrets.SSH_KEY }}" \
+                            -out=tfplan
 
             - name: Upload Plan
               if: failure()
