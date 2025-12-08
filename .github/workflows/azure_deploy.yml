@@ -36,6 +36,30 @@ jobs:
             - name: "Setup Terraform"
               uses: hashicorp/setup-terraform@v2.0.3
 
+            - name: "Get Secrets from Key Vault"
+              id: get_secrets
+              run: |
+                # SSH key
+                ssh_key=$(az keyvault secret show \
+                    --name sshkey \
+                    --vault-name ${{ secrets.KEYVAULT_NAME }} \
+                    --query value -o tsv)
+
+                admin_pass=$(az keyvault secret show \
+                    --name adminpassword \
+                    --vault-name ${{ secrets.KEYVAULT_NAME }} \
+                    --query value -o tsv)
+
+                echo "SSH_KEY=$ssh_key"
+                echo "ADMIN_PASSWORD=$admin_pass"
+
+                echo "SSH_KEY<<EOF" >> $GITHUB_ENV
+                echo "$ssh_key" >> $GITHUB_ENV
+                echo "EOF" >> $GITHUB_ENV
+                echo "ADMIN_PASSWORD<<EOF" >> $GITHUB_ENV
+                echo "$admin_pass" >> $GITHUB_ENV
+                echo "EOF" >> $GITHUB_ENV
+
             - name: 'Install TFLint'
               run: |
                 curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
@@ -66,7 +90,11 @@ jobs:
               run: tfsec .
 
             - name: 'Terraform Plan'
-              run: terraform plan -var-file=env-var/${{ github.ref_name }}.tfvars -out=tfplan
+              run: terraform plan \
+                    -var-file=env-var/${{ github.ref_name }}.tfvars \
+                    -var "ssh_key=$SSH_KEY" \
+                    -var "admin_pass=$ADMIN_PASSWORD" \                    
+                    -out=tfplan
 
             - name: Upload Plan
               uses: actions/upload-artifact@v5.0.0
@@ -75,7 +103,7 @@ jobs:
                 path: ./tfplan
 
     # apply:
-    #     needs: setup
+    #     needs: setup adding this
     #     runs-on: ubuntu-latest
     #     environment: ${{ github.ref_name }}
     #     defaults:
