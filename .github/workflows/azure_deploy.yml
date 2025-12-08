@@ -92,8 +92,8 @@ jobs:
             - name: 'Terraform Plan'
               run: terraform plan \
                     -var-file=env-var/${{ github.ref_name }}.tfvars \
-                    -var "ssh_key=$SSH_KEY" \
-                    -var "admin_pass=$ADMIN_PASSWORD" \                    
+                    -var "ssh_key='$SSH_KEY'" \
+                    -var "admin_pass='$ADMIN_PASSWORD'" \
                     -out=tfplan
 
             - name: Upload Plan
@@ -103,7 +103,7 @@ jobs:
                 path: ./tfplan
 
     # apply:
-    #     needs: setup adding this
+    #     needs: setup this too
     #     runs-on: ubuntu-latest
     #     environment: ${{ github.ref_name }}
     #     defaults:
